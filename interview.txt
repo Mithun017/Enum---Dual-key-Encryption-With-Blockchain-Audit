@@ -1,0 +1,105 @@
+================================================================================
+INTERVIEW PREPARATION GUIDE
+Project: Dual-Key Encryption with Blockchain Audit & Post-Quantum Security
+================================================================================
+
+1. THE "ELEVATOR PITCH" (How to explain the project in 30 seconds)
+--------------------------------------------------------------------------------
+"I built an ultra-secure data vault designed to eliminate single points of failure. 
+It uses a 'Dual-Key' architecture, meaning data can only be decrypted if you have 
+BOTH the server's key and the user's password. To ensure accountability, every single 
+access attempt is permanently recorded on an immutable Blockchain Ledger. 
+I also future-proofed it against next-generation threats by integrating 'Kyber', 
+a Post-Quantum Cryptographic algorithm."
+
+
+2. CORE PROBLEM SOLVED (Why did you build this?)
+--------------------------------------------------------------------------------
+Most security systems have two major flaws:
+1. Single Point of Failure: If a hacker steals the database key (or an admin goes rogue), they can decrypt everything.
+2. Lack of Accountability: Admins can often view sensitive data and then delete the logs to cover their tracks.
+3. Future Threats: Standard encryption (like RSA) will be easily broken by future Quantum Computers.
+
+My solution fixes all three:
+- Dual-Key = No single person/key can decrypt data.
+- Blockchain = Logs cannot be deleted or tampered with.
+- Kyber = Safe against Quantum Computers.
+
+
+3. HOW THE SECURITY WORKS (The "Dual-Key" Logic)
+--------------------------------------------------------------------------------
+Think of a bank safety deposit box that requires TWO keys to open:
+- Key A (System Key): Stored securely in the server's database.
+- Key B (User Key): A password known ONLY to the user (never stored).
+
+The Algorithm Flow:
+1. When encrypting, we combine Key A + Key B to create a temporary "Master Key".
+2. This Master Key encrypts the data using AES-256 (military-grade standard).
+3. The Master Key is immediately destroyed from memory.
+4. Result: The server has the encrypted data and Key A, but it CANNOT decrypt it without the user's Key B.
+
+
+4. WHAT IS KYBER? (Post-Quantum Cryptography)
+--------------------------------------------------------------------------------
+Q: What is Kyber?
+A: Kyber is a "Key Encapsulation Mechanism" (KEM) selected by NIST (National Institute of Standards and Technology) as the new standard for post-quantum security.
+
+Q: Why use it?
+A: Traditional encryption (RSA/ECC) relies on math problems that Quantum Computers can solve instantly. Kyber relies on "Lattice-based cryptography," which is incredibly hard even for Quantum Computers to solve.
+
+Q: How is it used here?
+A: I use Kyber to securely "wrap" or encapsulate the System Key. This ensures that even if a hacker records all our encrypted traffic today and buys a Quantum Computer 10 years from now, they still can't crack the key exchange.
+
+
+5. HOW THE BLOCKCHAIN WORKS (The Audit Trail)
+--------------------------------------------------------------------------------
+I implemented a local blockchain ledger to track every event (Encryption, Decryption, Failure).
+
+Structure of a Block:
+- Index: Block #1, #2, #3...
+- Timestamp: Exact time of event.
+- Event Type: e.g., "FILE_DECRYPTION".
+- User ID: Who did it?
+- Previous Hash: The digital fingerprint of the block before it.
+- Current Hash: The fingerprint of this block + Previous Hash.
+
+Why it's secure:
+If a rogue admin tries to delete Block #5, the "Previous Hash" in Block #6 won't match anymore. The chain breaks, and the system instantly detects the tampering. This guarantees an "Immutable Audit Trail."
+
+
+6. TECHNICAL STACK (How I built it)
+--------------------------------------------------------------------------------
+- Frontend: React.js + Vite (Fast, modern UI).
+- Backend: Python FastAPI (High performance, great for async tasks).
+- Database: MySQL (Reliable structured storage).
+- Cryptography: 
+    - `pycryptodome` for AES-256.
+    - `pqc` (Post-Quantum Crypto) libraries for Kyber.
+- Blockchain: Custom Python implementation using SHA-256 hashing.
+
+
+7. REAL-WORLD USE CASES
+--------------------------------------------------------------------------------
+1. Healthcare: Storing patient records. Doctors need access, but every view must be logged to comply with privacy laws (HIPAA).
+2. Defense/Government: Storing Top Secret documents where "Two-Man Rule" (Dual Key) is mandatory.
+3. Finance: Protecting high-value transaction logs from insider threats (rogue employees).
+4. Legal Evidence: Storing digital evidence where you must prove in court that the file hasn't been altered (Chain of Custody).
+
+
+8. KEY CHALLENGES & SOLUTIONS
+--------------------------------------------------------------------------------
+Challenge: Integrating Kyber (it's new and complex).
+Solution: I created a wrapper class (`kyber_utils.py`) to handle the complex encapsulation/decapsulation logic, exposing simple `encrypt` and `decrypt` methods to the rest of the app.
+
+Challenge: Making the Blockchain persistent.
+Solution: Initially, it was in-memory. I migrated it to MySQL so the ledger survives server restarts, while maintaining the cryptographic linking logic in Python.
+
+Challenge: Handling large files.
+Solution: I used Python's `UploadFile` stream processing to handle file uploads efficiently without crashing the server memory.
+
+
+9. FUTURE IMPROVEMENTS
+--------------------------------------------------------------------------------
+- Multi-Factor Authentication (MFA): Adding Google Authenticator for extra login security.
+- Decentralization: Replicating the blockchain across multiple servers so if one burns down, the logs survive.
+- Hardware Security Modules (HSM): Storing the System Key on a physical USB stick instead of the database for maximum security.
