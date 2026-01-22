@@ -33,3 +33,7 @@ echo.
 echo You can now run the application using 'run_app.bat'
 echo.
 pause
+
+echo.
+echo Starting the application...
+call run_app.bat

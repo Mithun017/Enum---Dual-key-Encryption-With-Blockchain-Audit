@@ -3,135 +3,126 @@
 ## 📌 Project Overview
 This project is an enterprise-grade backend security system designed to protect sensitive data using a **Dual-Key Encryption Model** combined with a **Blockchain-Based Immutable Audit Ledger**. It eliminates single points of failure by requiring two independent keys for decryption and ensures all access events are permanently logged.
 
-## 🚀 Features
-- **Dual-Key Encryption**: Requires both a System Key (Key-A) and a User Key (Key-B) to decrypt data (AES-256).
-- **Blockchain Audit Ledger**: Tamper-proof log of all encryption and decryption events using SHA-256 hashing.
-- **Role-Based Access Control (RBAC)**:
-  - **ADMIN**: Full access (Encrypt, Decrypt, Audit, Monitor).
-  - **SERVICE**: Encryption only (cannot decrypt).
-  - **AUDITOR**: Read-only access to the blockchain ledger.
-- **Real-time Monitoring**: Detects anomalies like excessive decryption failures.
-- **Modern Frontend**: React-based dashboard for easy interaction.
+It is future-proofed against next-generation threats by integrating **Post-Quantum Cryptography (Kyber-1024)**.
+
+## 🚀 Key Features
+### 🔐 Advanced Security
+- **Dual-Key Encryption**: Requires both a System Key (Key-A) and a User Key (Key-B) to decrypt data.
+- **Post-Quantum Cryptography**: Uses **Kyber-1024** (NIST-approved) to protect keys against quantum computer attacks.
+- **AES-256**: Military-grade standard for data encryption.
+
+### 📜 Immutable Audit Trail
+- **Blockchain Ledger**: Every action (Encrypt, Decrypt, Failure) is recorded in a tamper-proof SHA-256 linked list.
+- **MySQL Storage**: The blockchain is persisted in a relational database for reliability.
+
+### 📂 File Security
+- **File Encryption**: Securely upload, encrypt, and download files (PDFs, Images, Docs).
+- **Secure Transfer**: Files are encrypted in transit and at rest.
+
+### 📊 Visual Analytics
+- **Security Dashboard**: Real-time graphs showing system activity (Encryption vs Decryption).
+- **Anomaly Detection**: Alerts for suspicious activities like excessive decryption failures.
+
+### 👥 Role-Based Access Control (RBAC)
+- **ADMIN**: Full access (Encrypt, Decrypt, Audit, Monitor).
+- **SERVICE**: Encryption only (cannot decrypt).
+- **AUDITOR**: Read-only access to the blockchain ledger.
+
+---
 
 ## 🛠️ Tech Stack
-- **Backend**: Python, FastAPI, Cryptography (Fernet/AES), Jose (JWT).
-- **Frontend**: React.js, Vite, Axios, Vanilla CSS.
-- **Database**: MySQL (Relational Database).
-- **Encryption**: Hybrid Post-Quantum (Kyber-1024 + AES-256).
-
-
-## ⚙️ Prerequisites
-- **Python** (3.8 or higher)
-- **Node.js** (14 or higher) & **npm**
+- **Backend**: Python, FastAPI, SQLAlchemy, PyMySQL.
+- **Frontend**: React.js, Vite, Recharts (for graphs).
+- **Database**: MySQL.
+- **Cryptography**: `pycryptodome` (AES), `pqc` (Kyber).
+- **Blockchain**: Custom Python implementation with SHA-256 hashing.
 
 ---
 
 ## 📥 Installation & Setup
 
-### 1. Backend Setup
-Navigate to the project root and install Python dependencies:
+### Option 1: One-Click Setup (Recommended)
+1.  Clone the repository.
+2.  Double-click **`setup_project.bat`**.
+    *   This script will automatically install all Python and Node.js dependencies for you.
 
+### Option 2: Manual Setup
+**Backend:**
 ```bash
 cd backend
 pip install -r requirements.txt
 ```
 
-### 2. Frontend Setup
-Navigate to the frontend directory and install Node dependencies:
-
+**Frontend:**
 ```bash
 cd frontend
 npm install
 ```
 
+### Database Setup
+1.  Ensure you have MySQL installed and running.
+2.  Create a database named `dualkey_db`.
+3.  (Optional) You can import the schema from `database/Database.sql`.
+
 ---
 
 ## ▶️ Running the Application
 
-You need to run the Backend and Frontend in separate terminals.
+Simply double-click **`run_app.bat`** to start both the Backend and Frontend servers automatically.
 
-### Terminal 1: Start Backend
-```bash
-# From the 'backend' directory
-uvicorn app.main:app --reload
-```
-*Server running at: `http://127.0.0.1:8000`*
-
-### Terminal 2: Start Frontend
-```bash
-# From the 'frontend' directory
-npm run dev
-```
-*UI running at: `http://localhost:5173`*
-
-### Alternative: One-Click Start (Windows)
-Simply double-click the `run_app.bat` file in the root directory to start both servers automatically.
+Or run them manually:
+*   **Backend**: `uvicorn app.main:app --reload` (Port 8000)
+*   **Frontend**: `npm run dev` (Port 5173)
 
 ---
 
 ## 📖 Usage Guide
 
 ### 1. Login
-Access the frontend at `http://localhost:5173`. Use the following credentials:
+Access the UI at `http://localhost:5173`.
+*   **Admin**: `admin` / `password`
+*   **Service**: `service` / `password`
+*   **Auditor**: `auditor` / `password`
 
-| Role | Username | Password | Capabilities |
-|------|----------|----------|--------------|
-| **Admin** | `admin` | `password` | Encrypt, Decrypt, View Ledger, View Alerts |
-| **Service** | `service` | `password` | Encrypt Only |
-| **Auditor** | `auditor` | `password` | View Ledger Only |
-
-### 2. Encrypting Data
-1. Login as **Admin** or **Service**.
-2. Go to **Encrypt Data**.
-3. Enter your sensitive text.
-4. Provide a **User Key** (e.g., `my-secret-pass`) and a **Key ID** (e.g., `doc-1`).
-5. Click **Encrypt**.
-6. **IMPORTANT**: Copy BOTH the `Encrypted Data` and the `Kyber Ciphertext`. You will need both to decrypt.
+### 2. Encrypting Data (Text or File)
+1.  Go to **Encrypt Data**.
+2.  Choose **Text** or **File** tab.
+3.  Enter data/upload file.
+4.  Provide a **User Key** (Password) and **Key ID**.
+5.  **Save the Output**: You need the `Kyber Ciphertext` to decrypt later!
 
 ### 3. Decrypting Data
-1. Login as **Admin**.
-2. Go to **Decrypt Data**.
-3. Paste the `Encrypted Data`.
-4. Paste the `Kyber Ciphertext`.
-4. Enter the **SAME** User Key and Key ID used during encryption.
-5. Click **Decrypt** to reveal the original text.
+1.  Go to **Decrypt Data**.
+2.  Paste the `Encrypted Data` (or upload `.enc` file).
+3.  Paste the `Kyber Ciphertext`.
+4.  Enter the **Same User Key**.
+5.  Click Decrypt.
 
-### 4. Auditing
-1. Login as **Admin** or **Auditor**.
-2. Go to **Audit Ledger**.
-3. View the immutable chain of blocks recording every action.
-
----
-
-## 🧪 Running Tests
-To run the backend integration tests:
-
-```bash
-# From the root directory
-$env:PYTHONPATH="backend"
-pytest backend/tests/test_main.py
-```
+### 4. Monitoring
+*   **Audit Ledger**: View the raw blockchain logs.
+*   **Security Alerts**: View visual graphs of system usage and alerts.
 
 ---
 
 ## 📂 Project Structure
 ```
-├── backend/                # Backend (FastAPI)
+├── backend/                # FastAPI Backend
 │   ├── app/
-│   │   ├── auth/           # JWT Authentication
+│   │   ├── auth/           # JWT & RBAC
 │   │   ├── blockchain/     # Ledger Logic
-│   │   ├── encryption/     # Dual-Key Engine
-│   │   ├── key_management/ # Key Storage
-│   │   ├── monitoring/     # Anomaly Detection
-│   │   └── main.py         # App Entry Point
-│   ├── database/           # Local storage for Ledger & Keys
-│   └── tests/              # Integration Tests
+│   │   ├── encryption/     # Dual-Key & Kyber Engine
+│   │   ├── monitoring/     # Analytics & Alerts
+│   │   └── main.py         # Entry Point
+│   └── database/           # Database Config
 │
-├── frontend/               # Frontend (React)
+├── frontend/               # React Frontend
 │   ├── src/
-│   │   ├── components/     # React Components
-│   │   └── api.js          # API Configuration
-│   └── package.json
+│   │   ├── components/     # UI Components (Dashboard, Charts, etc.)
+│   │   └── api.js          # Axios Config
 │
+├── database/               # SQL Schema
+├── interview.txt           # Project Explanation Guide
+├── run_app.bat             # Start App Script
+├── setup_project.bat       # Install Dependencies Script
 └── README.md               # This file
 ```
